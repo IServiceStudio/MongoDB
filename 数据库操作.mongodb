@@ -37,17 +37,20 @@ db.User.insertMany(
         {
             "Name":"Ace.Lv",
             "Sex":"男",
-            "Adress":"China"
+            "Adress":"China",
+            "Score":NumberInt(100)
         },
         {
             "Name":"Feng",
             "Sex":"女",
-            "Adress":"中国"
+            "Adress":"中国",
+            "Score":NumberInt(101)
         },
         {
             "Name":"IService",
             "Sex":"未知",
-            "Adress":"北京"
+            "Adress":"北京",
+            "Score":NumberInt(102)
         }
     ]
 )
@@ -67,12 +70,142 @@ db.User.deleteOne({"Name":"Ace.Lv"})
 db.User.find()
 //格式化显示
 db.User.find().pretty()
+//按照条件搜索
 db.User.find({"Name":"Ace.Lv"})
+//返回符合条件的第一条文档
 db.User.findOne({"Name":"Ace.Lv"})
+//数据塑性
 db.User.find({"Name":"Ace.Lv"},{"Name":1,"_id":0})
+//统计查询
 db.User.count({"Name":"Ace.Lv"})
 db.User.count({})
+//查询前两条
 db.User.find().limit(2)
+//跳过前两条
 db.User.find().skip(2)
+//分页查询
 db.User.find().skip(1).limit(2)
+//按照Name倒序
 db.User.find().sort({"Name":-1})
+
+
+//正则查询：完全匹配
+db.User.find({Name:/IService/})
+//正则查询：以*开头
+db.User.find({Name:/^I/})
+
+/* 比较查询 */
+//大于
+db.User.find({Score:{$gt:100}})
+//大于等于
+db.User.find({Score:{$gte:100}})
+//小于
+db.User.find({Score:{$lt:100}})
+//小于等于
+db.User.find({Score:{$lte:100}})
+//不等于
+db.User.find({Score:{$ne:100}})
+/* 比较查询 */
+
+/* 包含查询 */
+//包含查询
+db.User.find({Score:{$in:[100,101]}})
+//不包含查询
+db.User.find({Score:{$nin:[100,101]}})
+/* 包含查询 */
+
+/* 链接查询 */
+//And
+db.User.find(
+    {
+        "Name":"IService",
+        "Score":NumberInt(102)
+    }
+)
+db.User.find({
+    $and:[
+        {
+            Name:/IService/
+        },
+        {
+            Score:{$gt:100}
+        }
+    ]
+})
+db.User.find({
+    $and:[
+        {
+            Name:/IService/
+        },
+        {
+            Score:{$gt:103}
+        }
+    ]
+})
+//Or
+db.User.find({
+    $or:[
+        {
+            Name:/IService/
+        },
+        {
+            Score:{$gt:103}
+        }
+    ]
+})
+
+//And + Or
+db.User.find()
+db.User.find({
+    $and:[
+        {
+            Name:/IService/
+        },
+        {
+            Score:{$gt:100}
+        }
+    ],
+    $or:[
+        {
+            Name:/Feng/
+        },
+        {
+            Score:{$gt:100}
+        }
+    ]
+})
+/* 链接查询 */
+
+/* 索引 */
+//查询当前集合的所有索引
+db.User.getIndexes()
+
+//创建索引
+db.User.find()
+//单字段索引
+db.User.createIndex({Name:1})
+db.User.find({Name:"Feng"}).explain()
+
+//复合索引
+db.User.createIndex({Name:1,Score:-1})
+
+//删除集合的所有索引
+db.User.dropIndexes()
+//删除指定索引:按照索引名称删除
+db.User.dropIndex("Name_1_Score_-1")
+//删除指定索引：按照索引类型删除
+db.User.dropIndex({Name:1,Score:-1})
+/* 索引 */
+
+/* 聚合查询 */
+db.User.aggregate(
+    [
+        {
+            $group:{_id:"$Name",_score:{$sum:1}}
+        }
+    ]
+)
+
+
+
+
