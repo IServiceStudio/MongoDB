@@ -1,0 +1,78 @@
+//创建或切换数据库
+use Test
+
+//查询所有数据库
+show dbs
+
+//创建集合
+db.createCollection("Class")
+
+//显示当前数据库下的所有集合
+show tables
+show collections
+
+//删除集合
+db.User.drop()
+db.Class.drop()
+
+/*
+    插入单条文档
+    如果User不存在，自动创建集合
+*/
+db.User.insert(
+    {
+        "Id":1,
+        "Name":"IService"
+    }
+)
+db.User.insertOne(
+    {
+        "Id":1,
+        "Name":"IService"
+    }
+)
+//插入多条文档
+db.User.insertMany(
+    [
+        {
+            "Name":"Ace.Lv",
+            "Sex":"男",
+            "Adress":"China"
+        },
+        {
+            "Name":"Feng",
+            "Sex":"女",
+            "Adress":"中国"
+        },
+        {
+            "Name":"IService",
+            "Sex":"未知",
+            "Adress":"北京"
+        }
+    ]
+)
+
+//修改
+db.User.update({"Name":"Ace.Lv"},{$set:{"Sex":"男"}})
+
+//删除文档
+db.User.remove({"Name":"Ace.Lv"})
+//删除所有文档
+db.User.remove({})
+//官方推荐
+db.User.deleteMany({})
+db.User.deleteOne({"Name":"Ace.Lv"})
+
+//查询所有文档
+db.User.find()
+//格式化显示
+db.User.find().pretty()
+db.User.find({"Name":"Ace.Lv"})
+db.User.findOne({"Name":"Ace.Lv"})
+db.User.find({"Name":"Ace.Lv"},{"Name":1,"_id":0})
+db.User.count({"Name":"Ace.Lv"})
+db.User.count({})
+db.User.find().limit(2)
+db.User.find().skip(2)
+db.User.find().skip(1).limit(2)
+db.User.find().sort({"Name":-1})
